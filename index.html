@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Phone Book</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.5/marked.min.js"></script>
+    <style>
+        .tablesorter-headerUnSorted  .up,
+        .tablesorter-headerUnSorted  .down {
+            display: none;
+        }
+        .tablesorter-headerAsc  .up,
+        .tablesorter-headerAsc  .sort {
+            display: none;
+        }
+        .tablesorter-headerDesc .down,
+        .tablesorter-headerDesc .sort {
+            display: none;
+        }
+        .flexed {
+            display: flex;
+            justify-content: space-between;
+        }
+        .container {
+            margin-top: 30px;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading flexed">
+            <div class="col-sm-8"><input type="search" class="form-control"></div>
+
+            <button type="button" class="btn btn-info col-sm-4" data-toggle="modal" data-target="#addNote">
+                Добавить запись
+            </button>
+
+            <div class="modal modal-md" id="addNote" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel">Добавть запись</h4>
+                        </div>
+                        <form>
+                            <div class="modal-body">
+                                <fieldset class="form-group">
+                                    <label for="name" class="sr-only">Имя</label>
+                                    <input type="text" class="form-control" id="name" placeholder="Имя">
+                                </fieldset>
+
+                                <fieldset class="form-group">
+                                    <label for="email" class="sr-only">Email address</label>
+                                    <input type="email" class="form-control" id="email" placeholder="email">
+                                </fieldset>
+
+                                <fieldset class="form-group">
+                                    <label for="tel" class="sr-only">Телефон</label>
+                                    <input type="tel" class="form-control" id="tel" placeholder="Телефон">
+                                </fieldset>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+                                <!-- data-toggle="modal" data-target="#noteAdded" -->
+                                <button type="button" class="btn btn-primary" data-dismiss="modal"
+                                >Добавить</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal modal-sm" id="noteAdded" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <h4 class="modal-title">Запись добавлена!</h4>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">Ок</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        <table id="myTable" class="table table-hover table-bordered table-striped">
+            <thead>
+            <tr class="info">
+                <th class="header">
+                    <div class="content">
+                        <span class="glyphicon glyphicon-sort-by-alphabet down"></span>
+                        <span class="glyphicon glyphicon-sort-by-alphabet-alt up"></span>
+                        <span class="glyphicon glyphicon-sort sort"></span>
+                        Name
+                    </div>
+
+                </th>
+                <th class="header">
+                    <div class="content">
+                        <span class="glyphicon glyphicon-sort-by-alphabet down"></span>
+                        <span class="glyphicon glyphicon-sort-by-alphabet-alt up"></span>
+                        <span class="glyphicon glyphicon-sort sort"></span>
+                        e-mail
+                    </div>
+
+                </th>
+                <th class="header">
+                    <div class="content">
+                        <span class="glyphicon glyphicon-sort-by-attributes down"></span>
+                        <span class="glyphicon glyphicon-sort-by-attributes-alt up"></span>
+                        <span class="glyphicon glyphicon-sort sort"></span>
+                        Tel.
+                    </div>
+                </th>
+            </tr>
+            </thead>
+            <tbody id="tbody">
+            <tr>
+                <td>vasya</td>
+                <td>ololol@mail.com</td>
+                <td>+7(999)-123-4567</td>
+            </tr>
+            <tr>
+                <td>petya</td>
+                <td>kekeke@mail.com</td>
+                <td>+7(922)-123-45-67</td>
+            </tr>
+            <tr>
+                <td>kolya</td>
+                <td>muahahah@mail.com</td>
+                <td></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+<script src="//cdn.jsdelivr.net/tablesorter/2.17.4/js/jquery.tablesorter.min.js"></script>
+<script src="bundle.js"></script>
+<script>
+</script>
+</body>
+</html>
