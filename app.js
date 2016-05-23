@@ -4,6 +4,7 @@ const path = require('path');
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+const hbs = require('hbs');
 
 const viewsDir = path.join(__dirname, '.');
 const publicDir = path.join(__dirname, '.');
