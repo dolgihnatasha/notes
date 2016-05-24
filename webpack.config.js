@@ -6,9 +6,12 @@ module.exports = {
     entry: {
         main: './index.js'
     },
+    resolve: {
+        extensions: ['', '.js', '.jsx']
+    },
     output: {
         path: path.join(__dirname, '.'),
-        filename: 'index.js',
+        filename: 'bundle.js',
         publicPath: '/'
     },
     module: {
@@ -16,7 +19,10 @@ module.exports = {
             {
                 test: /\.js$/,
                 exclude: /node_modules/,
-                loader: "babel-loader"
+                loader: "babel-loader",
+                query: {
+                    presets: ['es2015', 'react']
+                }
             }
         ]
     }
