@@ -66,6 +66,8 @@
 	}
 
 	$(document).ready(function () {
+	    allNotes = storage.getAllNotes(); // загружаем имеющиеся записи
+	    console.log(allNotes);
 	    renderNotes(allNotes); // отображаем загруженные из хранилища записи
 	    $("#myTable").tablesorter(); // подключаем сортировку по столбцам
 	});
@@ -73,16 +75,25 @@
 	document.getElementById('search').oninput = function (event) {
 	    // поиск по подстроке
 	    var filter = event.target.value;
-	    renderNotes(allNotes.filter(search(filter)));
+	    renderNotes(allNotes.filter(search(filter)) // сортируем по запросу
+	    );
 	};
 
-	storage.onChange(function (newValue) {
-	    try {
-	        allNotes.push(newValue);
-	        renderNotes(allNotes);
-	    } catch (err) {
-	        console.error('There is a problem:', newValue);
+	storage.onChangeHere(function (note) {
+	    // изменения в текущей вкладке
+	    allNotes.push(note);
+	    renderNotes(allNotes);
+	});
+
+	storage.onChange(function (event) {
+	    // изменения из другой вкладки
+	    if (event.key !== 'key' && event.key !== 'last') {
+	        console.log('here');
+	        try {
+	            allNotes.push(JSON.parse(event.newValue));
+	        } catch (e) {}
 	    }
+	    renderNotes(allNotes);
 	});
 
 	$('#submitForm').on('click', function (event) {
@@ -91,6 +102,9 @@
 	        return obj;
 	    }, {});
 	    storage.addNote(data);
+	    reset('name');
+	    reset('email');
+	    reset('tel');
 	});
 
 	document.getElementById('name').oninput = function (event) {
@@ -129,6 +143,18 @@
 	    $('#submit').attr("disabled", true);
 	}
 
+	function reset(id) {
+	    id = '#' + id;
+	    $(id).val('');
+	    $(id + 'OK').hide();
+	    $(id + 'Err').hide();
+	    var parent = $(id).parent();
+	    parent.removeClass('has-success has-feedback has-error');
+	}
+
+	//TODO: load data from ls
+	//TODO: clear form
+
 /***/ },
 /* 1 */
 /***/ function(module, exports) {
@@ -140,16 +166,15 @@
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var LocalStorage = function () {
-	    _createClass(LocalStorage, null, [{
+	    _createClass(LocalStorage, [{
 	        key: 'currentNumber',
 	        get: function get() {
-	            try {
-	                return parseInt(localStorage.get('last'));
-	            } catch (e) {
-	                return 0;
-	            }
+	            var n = localStorage.getItem('last');
+	            console.log('get:', n);
+	            return n ? parseInt(n) : 0;
 	        },
 	        set: function set(num) {
+	            console.log('set:', num);
 	            localStorage.setItem('last', num.toString());
 	        }
 	    }]);
@@ -161,22 +186,30 @@
 	    _createClass(LocalStorage, [{
 	        key: 'onChange',
 	        value: function onChange(func) {
+	            window.addEventListener('storage', func);
+	        }
+	    }, {
+	        key: 'onChangeHere',
+	        value: function onChangeHere(func) {
 	            this.onAdd = func;
 	        }
 	    }, {
 	        key: 'addNote',
 	        value: function addNote(note) {
-	            localStorage.setItem(LocalStorage.currentNumber.toString(), JSON.stringify(note));
-	            LocalStorage.currentNumber += 1;
+	            localStorage.setItem(this.currentNumber.toString(), JSON.stringify(note));
+	            this.currentNumber += 1;
 	            this.onAdd(note);
 	        }
 	    }, {
 	        key: 'getAllNotes',
 	        value: function getAllNotes() {
 	            var result = [];
-	            for (var i = 0; i++; i > LocalStorage.currentNumber) {
+	            for (var i = 0; i < this.currentNumber; i++) {
 	                try {
-	                    result.push(localStorage.getItem(i.toString(10)));
+	                    var note = JSON.parse(localStorage.getItem(i.toString()));
+	                    if (note) {
+	                        result.push(note);
+	                    }
 	                } catch (e) {}
 	            }
 	            return result;

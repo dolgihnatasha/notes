@@ -1,14 +1,13 @@
 'use strict';
 
 class LocalStorage {
-    static get currentNumber() {
-        try {
-            return parseInt(localStorage.get('last'));
-        } catch (e) {
-            return 0;
-        }
+    get currentNumber() {
+        var n = localStorage.getItem('last');
+        console.log('get:', n);
+        return n ? parseInt(n) : 0;
     }
-    static set currentNumber(num) {
+    set currentNumber(num) {
+        console.log('set:', num);
         localStorage.setItem('last', num.toString());
     }
     
@@ -34,21 +33,28 @@ class LocalStorage {
     }
 
     onChange (func) {
-        this.onAdd = func
+        window.addEventListener('storage', func);
+    }
+
+    onChangeHere (func) {
+        this.onAdd = func;
     }
 
     addNote (note) {
-        localStorage.setItem(LocalStorage.currentNumber.toString(), JSON.stringify(note));
-        LocalStorage.currentNumber += 1;
+        localStorage.setItem(this.currentNumber.toString(), JSON.stringify(note));
+        this.currentNumber += 1 ;
         this.onAdd(note);
     }
 
     getAllNotes () {
         var result = [];
-        for (var i = 0; i++; i > LocalStorage.currentNumber) {
+        for (var i = 0; i < this.currentNumber; i++) {
             try {
-                result.push(localStorage.getItem(i.toString(10)));
-            } catch (e) {}
+                var note = JSON.parse(localStorage.getItem(i.toString()));
+                if (note) {
+                    result.push(note);
+                }
+            } catch (e){}
         }
         return result;
     }

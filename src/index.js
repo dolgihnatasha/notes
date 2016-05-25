@@ -23,6 +23,8 @@ function renderNotes(notes) {
 }
 
 $(document).ready(function(){
+    allNotes = storage.getAllNotes(); // загружаем имеющиеся записи
+    console.log(allNotes);
     renderNotes(allNotes); // отображаем загруженные из хранилища записи
     $("#myTable").tablesorter(); // подключаем сортировку по столбцам
 });
@@ -30,17 +32,23 @@ $(document).ready(function(){
 document.getElementById('search').oninput = event => { // поиск по подстроке
     var filter = event.target.value;
     renderNotes(
-        allNotes.filter(search(filter))
+        allNotes.filter(search(filter)) // сортируем по запросу
     );
 };
 
-storage.onChange((newValue) => {
-    try {
-        allNotes.push(newValue);
-        renderNotes(allNotes);
-    } catch (err) {
-        console.error('There is a problem:', newValue);
+storage.onChangeHere(note => {// изменения в текущей вкладке
+    allNotes.push(note);
+    renderNotes(allNotes);
+});
+
+storage.onChange(event => {// изменения из другой вкладки
+    if (event.key !== 'key' && event.key !== 'last') {
+        console.log('here');
+        try {
+            allNotes.push(JSON.parse(event.newValue));
+        } catch (e) {}
     }
+    renderNotes(allNotes);
 });
 
 $('#submitForm').on('click', event => {
@@ -49,6 +57,9 @@ $('#submitForm').on('click', event => {
         return obj;
     }, {});
     storage.addNote(data);
+    reset('name');
+    reset('email');
+    reset('tel');
 });
 
 document.getElementById('name').oninput = event => {
@@ -86,3 +97,16 @@ function validateErr(id) {
     $(id + 'Err').show();
     $('#submit').attr("disabled", true);
 }
+
+function reset(id) {
+    id = '#' + id;
+    $(id).val('');
+    $(id + 'OK').hide();
+    $(id + 'Err').hide();
+    var parent = $(id).parent();
+    parent.removeClass('has-success has-feedback has-error');
+}
+
+//TODO: load data from ls
+//TODO: clear form
+
