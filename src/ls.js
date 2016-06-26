@@ -1,6 +1,8 @@
 'use strict';
 
 class LocalStorage {
+    
+    // геттер и сеттер для удобного получения текущего номера заметки в памяти
     get currentNumber() {
         var n = localStorage.getItem('last');
         console.log('get:', n);
@@ -13,7 +15,7 @@ class LocalStorage {
     
     constructor() {}
 
-    static getLocalStorage() {
+    static getLocalStorage() { // проверка доступности хранилища
         if (LocalStorage.checkLocalStorage()) {
             return new LocalStorage();
         } else {
@@ -32,21 +34,21 @@ class LocalStorage {
 
     }
 
-    onChange (func) {
+    onChange (func) { // обработчик добавления записи из другой вкладки
         window.addEventListener('storage', func);
     }
 
-    onChangeHere (func) {
+    onChangeHere (func) { // обработчик добавления записи в текущей вкладке
         this.onAdd = func;
     }
 
-    addNote (note) {
+    addNote (note) { // сохранение записи
         localStorage.setItem(this.currentNumber.toString(), JSON.stringify(note));
         this.currentNumber += 1 ;
         this.onAdd(note);
     }
 
-    getAllNotes () {
+    getAllNotes () { // загружаем все заиси
         var result = [];
         for (var i = 0; i < this.currentNumber; i++) {
             try {
@@ -59,6 +61,5 @@ class LocalStorage {
         return result;
     }
 }
-
 
 module.exports.LocalStorage = LocalStorage;

@@ -1,9 +1,11 @@
 'use strict';
 
 var React = require('react');
+var ReactDOM = require('react-dom');
 
 // немного реакта для удобного добавления записей на страницу
-var TableRow = note => {
+
+var TableRow = note => { // одна запись
     note = note.note;
     return (
         <tr>
@@ -14,31 +16,38 @@ var TableRow = note => {
     );
 };
 
-var Heading = (name) => {
-    var heading = name.name;
-    return (
-        <th class="header">
-            <span className="glyphicon glyphicon-sort-by-alphabet down"></span>
-            <span className="glyphicon glyphicon-sort-by-alphabet-alt up"></span>
-            <span className="glyphicon glyphicon-sort sort"></span>
-            {heading}
-        </th>
-    )
-};
+var Heading = React.createClass({// блок заголовка колонки
+    render: function () {
+        var heading = this.props.name;
+        var className = heading.toLowerCase().replace('-', '');
+        console.log(this.state);
+        return (
+            <th className={className} class="header" onclick="console.log('haha');">
+                <span className="glyphicon glyphicon-sort-by-alphabet down"/>
+                <span className="glyphicon glyphicon-sort-by-alphabet-alt up"/>
+                <span className="glyphicon glyphicon-sort sort"/>
+                {heading}
+            </th>
+        )
+    }
+});
 
-var TableHeading = () => {
-    return (
-        <thead>
-            <tr>
-                <Heading name="Name"/>
-                <Heading name="e-mail"/>
-                <Heading name="Tel."/>
-            </tr>
-        </thead>
-    )
-};
+var TableHeading = React.createClass({ // строка заголовка таблицы
+    render: function() {
+        console.log(this);
+        return (
+            <thead>
+                <tr>
+                    <Heading name="Name"/>
+                    <Heading name="e-mail"/>
+                    <Heading name="Tel"/>
+                </tr>
+            </thead>
+        )
+    }
+});
 
-var TableBody = notes => {
+var TableBody = notes => { //содержимое таблицы
     var tableRows = notes.notes.map(function (note, i) {
         return (
             <TableRow key={i} note={note}/>
@@ -51,7 +60,7 @@ var TableBody = notes => {
     );
 };
 
-var NotesTable = notes => {
+var NotesTable = notes => { // вся таблица
     return (
         <table id="myTable" className="table table-hover table-bordered table-striped">
             <TableHeading/>
@@ -60,8 +69,15 @@ var NotesTable = notes => {
     );
 };
 
+function renderNotes(notes) {
+    ReactDOM.render(
+        <NotesTable notes={notes}/>,
+        document.getElementById('table-container')
+    );
+}
+
+
 module.exports = {
-    TableRow,
-    TableBody,
-    NotesTable
+    NotesTable,
+    renderNotes
 };

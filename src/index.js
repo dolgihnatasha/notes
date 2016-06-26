@@ -1,32 +1,17 @@
 'use strict';
 
-var LS = require('./ls').LocalStorage;
-
-var React = require('react');
-var ReactDOM = require('react-dom');
-var {NotesTable} = require('./pageParts.js');
+var renderNotes = require('./pageParts.js').renderNotes;
 var search = require('./search');
+var sort = require('./sorting').sort;
+var storage = require('./ls').LocalStorage.getLocalStorage();
 
-var storage = LS.getLocalStorage();
-
-var allNotes = [
-    {name: 'vasiliy', email:'qwerqwr', tel:'0'},
-    {name: 'vasiliy2', email:'qwerqwr2', tel:'3456789'},
-    {name: 'vasiliy3', email:'qwerqwr3', tel:'1234'}
-]; // храним здесь записи для для удобства
-
-function renderNotes(notes) {
-    ReactDOM.render(
-        <NotesTable notes={notes}/>,
-        document.getElementById('table-container')
-    );
-}
+var allNotes = []; // храним здесь записи для для удобства
 
 $(document).ready(function(){
     allNotes = storage.getAllNotes(); // загружаем имеющиеся записи
     console.log(allNotes);
     renderNotes(allNotes); // отображаем загруженные из хранилища записи
-    $("#myTable").tablesorter(); // подключаем сортировку по столбцам
+    addSorting('myTable');
 });
 
 document.getElementById('search').oninput = event => { // поиск по подстроке
@@ -39,6 +24,7 @@ document.getElementById('search').oninput = event => { // поиск по под
 storage.onChangeHere(note => {// изменения в текущей вкладке
     allNotes.push(note);
     renderNotes(allNotes);
+    updateSortingClasses('');
 });
 
 storage.onChange(event => {// изменения из другой вкладки
@@ -51,7 +37,7 @@ storage.onChange(event => {// изменения из другой вкладк�
     renderNotes(allNotes);
 });
 
-$('#submitForm').on('click', event => {
+$('#submitForm').on('click', event => { // сохраняем запись
     var data = $('#form').serializeArray().reduce(function(obj, item) {
         obj[item.name] = item.value;
         return obj;
@@ -62,7 +48,7 @@ $('#submitForm').on('click', event => {
     reset('tel');
 });
 
-document.getElementById('name').oninput = event => {
+document.getElementById('name').oninput = event => {  // валидация имени
     if (event.target.value !== '') {
         validateOk('name');
     } else {
@@ -70,13 +56,62 @@ document.getElementById('name').oninput = event => {
     }
 };
 
-document.getElementById('email').oninput = event => {
+document.getElementById('email').oninput = event => { // валидация почты
     if (document.getElementById('email').checkValidity() && event.target.value !== '') {
         validateOk('email')
     } else {
         validateErr('email');
     }
 };
+
+function addSorting(tableID) { // подключаем сортировку
+    document.getElementsByClassName('name').item(0).addEventListener('click', sortTable('name'));
+    document.getElementsByClassName('email').item(0).addEventListener('click', sortTable('email'));
+    document.getElementsByClassName('tel').item(0).addEventListener('click', sortTable('tel'));
+    addSortingClasses(tableID);
+}
+
+function sortTable(field) {
+    return function handler(event) {
+        console.log('sort', field);
+        renderNotes(sort(allNotes, field));
+        updateSortingClasses(field);
+    }
+}
+
+function updateSortingClasses(field) {
+    var currentSort = document.getElementsByClassName(field).item(0);
+    if (currentSort.classList.contains('headerUnSorted')) {
+        currentSort.classList.remove('headerUnSorted');
+        currentSort.classList.add('headerAsc');
+    } else {
+        if (currentSort.classList.contains('headerAsc')) {
+            currentSort.classList.remove('headerAsc');
+            currentSort.classList.add('headerDesc');
+        } else {
+            currentSort.classList.remove('headerDesc');
+            currentSort.classList.add('headerAsc');
+        }
+    }
+    for (var node of currentSort.parentNode.childNodes) {
+        if (!node.classList.contains(field)) {
+            node.classList.remove('headerAsc');
+            node.classList.remove('headerDesc');
+            node.classList.add('headerUnSorted');
+        }
+    }
+}
+
+function addSortingClasses(tableID) {
+    var headings = document.getElementById(tableID).firstChild.firstChild.childNodes;
+    for (var node of headings) {
+        node.classList.remove('headerAsc');
+        node.classList.remove('headerDesc');
+        node.classList.add('headerUnSorted');
+    }
+}
+
+// валидация полей
 
 function validateOk(id) {
     id = '#' + id;
@@ -106,7 +141,3 @@ function reset(id) {
     var parent = $(id).parent();
     parent.removeClass('has-success has-feedback has-error');
 }
-
-//TODO: load data from ls
-//TODO: clear form
-

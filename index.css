@@ -1,0 +1,26 @@
+.headerUnSorted  .up,
+.headerUnSorted  .down {
+    display: none;
+}
+.headerAsc  .up,
+.headerAsc  .sort {
+    display: none;
+}
+.headerDesc .down,
+.headerDesc .sort {
+    display: none;
+}
+.flexed {
+    display: flex;
+    justify-content: space-between;
+}
+.container {
+    margin-top: 30px;
+    width: 90%;
+}
+.table {
+    margin:0;
+}
+fieldset > .glyphicon {
+    display: none;
+}
