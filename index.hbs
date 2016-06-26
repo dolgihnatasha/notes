@@ -30,10 +30,17 @@
                         <form id="form">
                             <div class="modal-body">
                                 <fieldset class="form-group">
-                                    <label for="name" class="sr-only">Имя</label>
+                                    <label for="name" class="sr-only">Имя*</label>
                                     <input type="text" class="form-control" id="name" placeholder="Имя" name="name">
                                     <span id="nameOK" class="glyphicon glyphicon-ok form-control-feedback"></span>
                                     <span id="nameErr" class="glyphicon glyphicon-remove form-control-feedback"></span>
+                                </fieldset>
+
+                                <fieldset class="form-group">
+                                    <label for="tel" class="sr-only">Телефон*</label>
+                                    <input type="tel" class="form-control" id="tel" placeholder="Телефон" name="tel">
+                                    <span id="emailOK" class="glyphicon glyphicon-ok form-control-feedback"></span>
+                                    <span id="emailErr" class="glyphicon glyphicon-remove form-control-feedback"></span>
                                 </fieldset>
 
                                 <fieldset class="form-group">
@@ -43,10 +50,7 @@
                                     <span id="emailErr" class="glyphicon glyphicon-remove form-control-feedback"></span>
                                 </fieldset>
 
-                                <fieldset class="form-group">
-                                    <label for="tel" class="sr-only">Телефон</label>
-                                    <input type="tel" class="form-control" id="tel" placeholder="Телефон" name="tel">
-                                </fieldset>
+
                             </div>
                             <div class="modal-footer">
                                 <button type="reset" class="btn btn-secondary" data-dismiss="modal">Отмена</button>

@@ -104,6 +104,15 @@
 	    }
 	};
 
+	document.getElemntById('tel').oninput = function (event) {
+	    // валидация имени
+	    if (event.target.value !== '') {
+	        validateOk('tel');
+	    } else {
+	        validateErr('tel');
+	    }
+	};
+
 	document.getElementById('email').oninput = function (event) {
 	    // валидация почты
 	    if (document.getElementById('email').checkValidity() && event.target.value !== '') {

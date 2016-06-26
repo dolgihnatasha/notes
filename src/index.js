@@ -54,6 +54,14 @@ document.getElementById('name').oninput = event => {  // валидация им
     }
 };
 
+document.getElemntById('tel').oninput = event => {  // валидация имени
+    if (event.target.value !== '') {
+        validateOk('tel');
+    } else {
+        validateErr('tel');
+    }
+};
+
 document.getElementById('email').oninput = event => { // валидация почты
     if (document.getElementById('email').checkValidity() && event.target.value !== '') {
         validateOk('email')
