@@ -1,2 +1,2 @@
 # notes
-Source files for [[phone-book-test-task.herokuapp.com]]
+Source files for [[http://phone-book-test-task.herokuapp.com]]
