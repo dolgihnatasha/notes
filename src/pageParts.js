@@ -20,9 +20,8 @@ var Heading = React.createClass({// блок заголовка колонки
     render: function () {
         var heading = this.props.name;
         var className = heading.toLowerCase().replace('-', '');
-        console.log(this.state);
         return (
-            <th className={className} class="header" onclick="console.log('haha');">
+            <th className={className} class="header">
                 <span className="glyphicon glyphicon-sort-by-alphabet down"/>
                 <span className="glyphicon glyphicon-sort-by-alphabet-alt up"/>
                 <span className="glyphicon glyphicon-sort sort"/>
@@ -34,7 +33,6 @@ var Heading = React.createClass({// блок заголовка колонки
 
 var TableHeading = React.createClass({ // строка заголовка таблицы
     render: function() {
-        console.log(this);
         return (
             <thead>
                 <tr>

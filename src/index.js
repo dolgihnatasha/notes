@@ -9,7 +9,6 @@ var allNotes = []; // храним здесь записи для для удо�
 
 $(document).ready(function(){
     allNotes = storage.getAllNotes(); // загружаем имеющиеся записи
-    console.log(allNotes);
     renderNotes(allNotes); // отображаем загруженные из хранилища записи
     addSorting('myTable');
 });
@@ -29,7 +28,6 @@ storage.onChangeHere(note => {// изменения в текущей вклад
 
 storage.onChange(event => {// изменения из другой вкладки
     if (event.key !== 'key' && event.key !== 'last') {
-        console.log('here');
         try {
             allNotes.push(JSON.parse(event.newValue));
         } catch (e) {}
@@ -73,7 +71,6 @@ function addSorting(tableID) { // подключаем сортировку
 
 function sortTable(field) {
     return function handler(event) {
-        console.log('sort', field);
         renderNotes(sort(allNotes, field));
         updateSortingClasses(field);
     }

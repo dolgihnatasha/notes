@@ -5,11 +5,9 @@ class LocalStorage {
     // геттер и сеттер для удобного получения текущего номера заметки в памяти
     get currentNumber() {
         var n = localStorage.getItem('last');
-        console.log('get:', n);
         return n ? parseInt(n) : 0;
     }
     set currentNumber(num) {
-        console.log('set:', num);
         localStorage.setItem('last', num.toString());
     }
     
@@ -31,7 +29,6 @@ class LocalStorage {
         } catch (e) {
             return false;
         }
-
     }
 
     onChange (func) { // обработчик добавления записи из другой вкладки
