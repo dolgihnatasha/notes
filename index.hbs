@@ -39,8 +39,8 @@
                                 <fieldset class="form-group">
                                     <label for="tel" class="sr-only">Телефон*</label>
                                     <input type="tel" class="form-control" id="tel" placeholder="Телефон" name="tel">
-                                    <span id="emailOK" class="glyphicon glyphicon-ok form-control-feedback"></span>
-                                    <span id="emailErr" class="glyphicon glyphicon-remove form-control-feedback"></span>
+                                    <span id="telOK" class="glyphicon glyphicon-ok form-control-feedback"></span>
+                                    <span id="telErr" class="glyphicon glyphicon-remove form-control-feedback"></span>
                                 </fieldset>
 
                                 <fieldset class="form-group">
@@ -53,9 +53,9 @@
 
                             </div>
                             <div class="modal-footer">
-                                <button type="reset" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+                                <button id="reset" type="reset" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
                                 <button id="submitForm" type="reset" class="btn btn-primary"
-                                        data-toggle="modal" data-target="#noteAdded" data-dismiss="modal">Добавить</button>
+                                        data-toggle="modal" data-target="#noteAdded" data-dismiss="modal" disabled>Добавить</button>
                             </div>
                         </form>
                     </div>
@@ -84,7 +84,6 @@
     </div>
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-<script src="https://www.atlasestateagents.co.uk/javascript/tether.min.js"></script>
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 <script src="bundle.js"></script>
 <script>

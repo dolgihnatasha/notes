@@ -1,20 +1,20 @@
 'use strict';
 
-var renderNotes = require('./pageParts.js').renderNotes;
-var search = require('./search');
-var sort = require('./sorting').sort;
-var storage = require('./ls').LocalStorage.getLocalStorage();
+let renderNotes = require('./pageParts.js').renderNotes;
+let search = require('./search');
+let sort = require('./sorting').sort;
+let storage = require('./ls').LocalStorage.getLocalStorage();
 
-var allNotes = []; // храним здесь записи для для удобства
+let allNotes = []; // храним здесь записи для для удобства
 
-$(document).ready(function(){
+document.addEventListener("DOMContentLoaded", () => {
     allNotes = storage.getAllNotes(); // загружаем имеющиеся записи
     renderNotes(allNotes); // отображаем загруженные из хранилища записи
     addSorting('myTable');
 });
 
 document.getElementById('search').oninput = event => { // поиск по подстроке
-    var filter = event.target.value;
+    let filter = event.target.value;
     renderNotes(
         allNotes.filter(search(filter)) // сортируем по запросу
     );
@@ -35,12 +35,21 @@ storage.onChange(event => {// изменения из другой вкладк�
     renderNotes(allNotes);
 });
 
-$('#submitForm').on('click', event => { // сохраняем запись
-    var data = $('#form').serializeArray().reduce(function(obj, item) {
-        obj[item.name] = item.value;
-        return obj;
-    }, {});
+let submitForm = document.getElementById('submitForm');
+submitForm.addEventListener('click', event => { // добавление записи
+    let formData = new FormData(document.getElementById('form'));
+    let data = {};
+    formData.forEach((e, i) => {
+        data[i] = e;
+    });
     storage.addNote(data);
+    reset('name');
+    reset('email');
+    reset('tel');
+});
+
+let reset_btn = document.getElementById('reset');
+reset_btn.addEventListener('click', event => {
     reset('name');
     reset('email');
     reset('tel');
@@ -54,7 +63,7 @@ document.getElementById('name').oninput = event => {  // валидация им
     }
 };
 
-document.getElemntById('tel').oninput = event => {  // валидация имени
+document.getElementById('tel').oninput = event => {  // валидация телефона
     if (event.target.value !== '') {
         validateOk('tel');
     } else {
@@ -63,7 +72,7 @@ document.getElemntById('tel').oninput = event => {  // валидация име
 };
 
 document.getElementById('email').oninput = event => { // валидация почты
-    if (document.getElementById('email').checkValidity() && event.target.value !== '') {
+    if (document.getElementById('email').checkValidity()) {
         validateOk('email')
     } else {
         validateErr('email');
@@ -85,7 +94,7 @@ function sortTable(field) {
 }
 
 function updateSortingClasses(field) {
-    var currentSort = document.getElementsByClassName(field).item(0);
+    let currentSort = document.getElementsByClassName(field).item(0);
     if (currentSort.classList.contains('headerUnSorted')) {
         currentSort.classList.remove('headerUnSorted');
         currentSort.classList.add('headerAsc');
@@ -98,7 +107,7 @@ function updateSortingClasses(field) {
             currentSort.classList.add('headerAsc');
         }
     }
-    for (var node of currentSort.parentNode.childNodes) {
+    for (let node of currentSort.parentNode.childNodes) {
         if (!node.classList.contains(field)) {
             node.classList.remove('headerAsc');
             node.classList.remove('headerDesc');
@@ -108,8 +117,8 @@ function updateSortingClasses(field) {
 }
 
 function addSortingClasses(tableID) {
-    var headings = document.getElementById(tableID).firstChild.firstChild.childNodes;
-    for (var node of headings) {
+    let headings = document.getElementById(tableID).firstChild.firstChild.childNodes;
+    for (let node of headings) {
         node.classList.remove('headerAsc');
         node.classList.remove('headerDesc');
         node.classList.add('headerUnSorted');
@@ -118,24 +127,30 @@ function addSortingClasses(tableID) {
 
 // валидация полей
 
+let valid = {tel: false, name: false};
+
 function validateOk(id) {
+    valid[id] = true;
     id = '#' + id;
     var parent = $(id).parent();
     parent.addClass('has-feedback has-success');
     parent.removeClass('has-error');
     $(id + 'OK').show();
     $(id + 'Err').hide();
-    $('#submit').removeAttr("disabled");
+    if (Object.keys(valid).length == 3 || (Object.keys(valid).length == 2 && valid.tel == true && valid.name == true)) {
+        $('#submitForm').removeAttr("disabled");
+    }
 }
 
 function validateErr(id) {
+    valid[id] = false;
     id = '#' + id;
     var parent = $(id).parent();
     parent.addClass('has-feedback has-error');
     parent.removeClass('has-success');
     $(id + 'OK').hide();
     $(id + 'Err').show();
-    $('#submit').attr("disabled", true);
+    $('#submitForm').attr("disabled", true);
 }
 
 function reset(id) {
@@ -145,4 +160,6 @@ function reset(id) {
     $(id + 'Err').hide();
     var parent = $(id).parent();
     parent.removeClass('has-success has-feedback has-error');
+    $('#submitForm').attr("disabled", true);
+    let valid = {tel: false, name: false};
 }
